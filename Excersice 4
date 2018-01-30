@@ -1,0 +1,28 @@
+access_template = """Interface {0}
+switchport mode access
+switchport access vlan {1}
+switchport nonegotiate
+spanning-tree portfast
+spanning-tree bpduguard enable"""
+
+trunk_template = """switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan {0}"""
+
+def define_configuration(configuration):
+	if configuration['interface_mode'] == 'access':
+		return access_template.format(configuration['interface_type'], configuration['vlan_number'])
+	elif configuration['interface_mode'] == 'trunk':
+		return trunk_template.format(configuration['allowed_vlans'])
+
+def main():
+	configuration = {}
+	configuration['interface_mode'] = input('Enter interface mode (access/trunk): ')
+	configuration['interface_type'] = input('Enter interface type and number: ')
+	if configuration['interface_mode'] == 'access':
+		configuration['vlan_number'] = input('Enter VLAN number: ')
+	elif configuration['interface_mode'] == 'trunk':
+		configuration['allowed_vlans'] = input('Enter allowed VLANs: ')
+	print(define_configuration(configuration))
+
+main()
