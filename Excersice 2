@@ -1,0 +1,41 @@
+def get_vlan_numbers(lines):
+	result = []
+	for line in lines:
+		if line.startswith('switchport trunk allowed vlan'):
+			line = line.replace('\n', '').split(' ')[4].split(',')
+			result.append(line)
+	return result
+
+def get_dublicate_numbers(numbers):
+	list_numbers = []
+	result = []
+	for i in numbers:
+		for j in i:
+			list_numbers.append(j)
+	for i in numbers:
+		for j in i:
+			if j != '' and list_numbers.count(j) == len(numbers):
+				result.append(j)
+	result = list(set(result))
+	return result
+
+def get_unique_numbers(numbers):
+	list_numbers = []
+	result = []
+	for i in numbers:
+		for j in i:
+			list_numbers.append(j)
+	for i in numbers:
+		for j in i:
+			if j != '' and list_numbers.count(j) < len(numbers) and list_numbers.count(j) > 0:
+				result.append(j)
+	result = list(set(result))
+	return result
+
+def main():
+	
+	lines = get_vlan_numbers(open('file.txt', 'r').readlines())
+	print('List_1={0}'.format(get_dublicate_numbers(lines)))
+	print('List_2={0}'.format(get_unique_numbers(lines)))
+
+main()
