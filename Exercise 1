@@ -1,0 +1,81 @@
+def check_ip(ip):
+	ip = ip.split('.')
+	for i in ip:
+		if int(i) < 0 or int(i) > 255:
+			return False
+	return True
+
+def check_mask(mask):
+	mask = mask.replace('/', '')
+	if int(mask) >= 0 and int(mask) <= 32:
+		return True
+	else:
+		return False
+
+def ip_to_binary(ip):
+	ip = ip.split('.')
+	bin_ip = []
+	for i in ip:
+		k = bin(int(i)).replace('0b', '')
+		k = '0'*(8 - len(k)) + k
+		bin_ip.append(k)
+	return '.'.join(bin_ip)
+
+def mask_to_binary(mask):
+	mask = int(mask.replace('/', ''))
+	bin_mask = []
+	s = 0
+	for i in range(mask):
+		if s != 0 and s%8 == 0:
+			bin_mask.append('.')
+			s = 0
+		bin_mask.append('1')
+		s += 1
+	for i in range(32-mask):
+		if s != 0 and s%8 == 0:
+			bin_mask.append('.')
+			s = 0
+		bin_mask.append('0')
+		s += 1
+	return ''.join(bin_mask)
+
+def get_network_address(ip, mask):
+	ip = ip_to_binary(ip).split('.')
+	mask = mask_to_binary(mask).split('.')
+	network_binary = []
+	for i in range(0, 3):
+		k = []
+		for j in range(0, 8):
+			num = int(ip[i][j]) * int(mask[i][j])
+			k.append(str(num))
+		network_binary.append(''.join(k))
+	network_ip = []
+	for i in network_binary:
+		network_ip.append(str(int(i, 2)))
+	network_ip.append('0')
+	return '.'.join(network_ip)
+
+def get_broadcast_address(ip, mask):
+	ip = get_network_address(ip, mask).split('.')
+	ip.pop()
+	ip.append('255')
+	return '.'.join(ip)
+
+def main():
+	while True:
+		ip = input('Enter Ip address: ')
+		if check_ip(ip):
+			break
+		else:
+			print('Invalid IP address format')
+	while True:
+		mask = input('Enter subnet mask in decimal format: ')
+		if check_mask(mask):
+			break
+		else:
+			print('Subnet mask is invalid')
+	print(ip_to_binary(ip))
+	print('network address is: {0}'.format(get_network_address(ip, mask)))
+	print('broadcast address is: {0}'.format(get_broadcast_address(ip, mask)))
+
+main()
